@@ -264,6 +264,36 @@ button:focus {
   padding-top: 10px;
 }
 
+#logoutBtn {
+  padding: 10px 24px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #8B1D1D;
+  color: #fff;
+  cursor: pointer;
+  z-index: 10001;
+  transition: background 0.2s;
+}
+
+#loginBtn{
+  position: absolute;
+  padding: 10px 24px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #2c3e50;
+  color: #fff;
+  cursor: pointer;
+  z-index: 10001;
+  transition: background 0.2s;
+}
+
+#logoutBtn:hover {
+  background-color: #D91515;
+}
+
+
 @media only screen and (max-device-width: 480px) {
   #helpScreen {
     position: fixed;

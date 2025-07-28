@@ -97,9 +97,7 @@
     <link rel="stylesheet" type="text/css" href="style/style.css" />
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-		<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
-		
-		
+    <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
 
     <script type="text/javascript" src="vendor/hammer.min.js"></script>
     <script type="text/javascript" src="vendor/js.cookie.js"></script>
@@ -121,17 +119,44 @@
     <script type="text/javascript" src="js/main.js"></script>
     <script type="text/javascript" src="js/initialization.js"></script>
 
-    <script type="text/javascript" src="lib/axios/dist/axios.standalone.js"></script>
-		<script type="text/javascript" src="lib/CryptoJS/rollups/crypto-js.js"></script>
-		<script type="text/javascript" src="lib/CryptoJS/rollups/sha256.js"></script>
-		<script type="text/javascript" src="lib/CryptoJS/components/hmac.js"></script>
-		<script type="text/javascript" src="lib/CryptoJS/components/enc-base64.js"></script>
-		<script type="text/javascript" src="lib/url-template/url-template.js"></script>
-		<script type="text/javascript" src="lib/apiGatewayCore/sigV4Client.js"></script>
-		<script type="text/javascript" src="lib/apiGatewayCore/apiGatewayClient.js"></script>
-		<script type="text/javascript" src="lib/apiGatewayCore/simpleHttpClient.js"></script>
-		<script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
-		<script type="text/javascript" src="newPlayerClient.js"></script>
+    <script
+      type="text/javascript"
+      src="lib/axios/dist/axios.standalone.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="lib/CryptoJS/rollups/crypto-js.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="lib/CryptoJS/rollups/sha256.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="lib/CryptoJS/components/hmac.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="lib/CryptoJS/components/enc-base64.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="lib/url-template/url-template.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="lib/apiGatewayCore/sigV4Client.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="lib/apiGatewayCore/apiGatewayClient.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="lib/apiGatewayCore/simpleHttpClient.js"
+    ></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
+    <script type="text/javascript" src="newPlayerClient.js"></script>
     <script type="text/javascript" src="newScoreClient.js"></script>
     <script src="vendor/sweet-alert.min.js"></script>
     <link rel="stylesheet" href="style/rrssb.css" />
@@ -143,25 +168,7 @@
   </head>
   <body>
     <canvas id="canvas"></canvas>
-    <div id="inputModal" class="modal">
-      <div class="modal-content">
-        <h2>Enter Your Details</h2>
-        <form action="inputForm" action="/createPlayer" method="POST">
-          <label for="username">UserName:</label>
-          <input type="text" id="username" name="username" required />
-          <label for="region">Region:</label>
-          <select name="region" id="region">
-            <option value="Americas">Americas</option>
-            <option value="Europe">Europe</option>
-            <option value="Oceania">Oceania</option>
-            <option value="Brazil">Brazil</option>
-            <option value="Asia">Asia</option>
-            <option value="Middleeast">MiddleEast</option>
-          </select>
-          <button type="submit">Submit</button>
-        </form>
-      </div>
-    </div>
+    <button id="loginBtn">Login</button>
     <div id="overlay" class="faded overlay"></div>
     <div id="startBtn"></div>
     <div id="helpScreen" class="unselectable">
@@ -197,20 +204,20 @@
     </script>
     <div id="highScoreInGameText">
       <div id="highScoreInGameTextHeader">HIGH SCORE</div>
-      <div id="currentHighScore">10292</div>
+      <div id="currentHighScore"></div>
     </div>
     <div id="playerContainer">
       <div id="playerInfo">
         <div id="playerInfoInGameTextHeader">PLAYER INFO</div>
         <div id="playerId">Id placeholder</div>
-        <div id="playerName">placeholder</div>
         <div id="playerRegion">Region Place</div>
+        <button id="logoutBtn">Logout</button>
       </div>
     </div>
     <div id="gameoverscreen">
       <div id="container">
         <div id="gameOverBox" class="GOTitle">GAME OVER</div>
-        <div id="cScore">1843</div>
+        <div id="cScore"></div>
         <div id="highScoresTitle" class="GOTitle">HIGH SCORES</div>
         <div class="score">
           <span class="scoreNum">1.</span>
@@ -360,5 +367,75 @@
       })();
     </script>
     <script type="text/javascript" src="vendor/rrssb.min.js"></script>
+    <script type="module">
+      import { UserManager } from "https://cdn.skypack.dev/oidc-client-ts";
+
+      const cognitoAuthConfig = {
+        authority:
+          "https://cognito-idp.us-west-2.amazonaws.com/us-west-2_C8aDKA7ck",
+        client_id: "i1ljeqcnlr979jnl82b3rvv20",
+        // redirect_uri: "http://localhost:5500/index.html",
+        redirect_uri: "https://jbb0807.github.io/hextris",
+        response_type: "code",
+        scope: "email openid phone",
+      };
+
+      // create a UserManager instance
+      const userManager = new UserManager({
+        ...cognitoAuthConfig,
+      });
+
+      export function signOutRedirect() {
+        const clientId = "i1ljeqcnlr979jnl82b3rvv20";
+        // const logoutUri = "http://localhost:5500/index.html";
+        const logoutUri = "https://jbb0807.github.io/hextris";
+        const cognitoDomain =
+          "https://us-west-2c8adka7ck.auth.us-west-2.amazoncognito.com";
+        window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
+          logoutUri
+        )}`;
+      }
+
+      $(document).ready(function () {
+        // check if user is already signed in
+        userManager.getUser().then((user) => {
+          console.log("User:", user);
+
+          if (user && !user.expired) {
+            $("#loginBtn").hide();
+            $("#playerId").text(user.profile.email);
+            $("#playerRegion").text("Region: " + user.profile.region);
+            $("#playerContainer").show();
+          } else {
+            $("#loginBtn").show();
+            $("#playerContainer").hide();
+          }
+        });
+
+        // handle the sign-in callback
+        userManager.signinCallback().then(function (user) {
+          console.log("User:", user);
+          if (user) {
+            $("#loginBtn").hide();
+            $("#playerId").text(user.profile.email);
+            $("#playerRegion").text("Region: " + user.profile.region);
+            $("#playerContainer").show();
+          } else {
+            $("#loginBtn").show();
+            $("#playerContainer").hide();
+          }
+        });
+
+        // Login button functionality
+        $("#loginBtn").click(async function () {
+          await userManager.signinRedirect();
+        });
+
+        // Logout button functionality
+        $("#logoutBtn").click(async function () {
+          await signOutRedirect();
+        });
+      });
+    </script>
   </body>
 </html>
