@@ -1,5 +1,3 @@
-const { response } = require("express");
-
 function scaleCanvas() {
   canvas.width = $(window).width();
   canvas.height = $(window).height();

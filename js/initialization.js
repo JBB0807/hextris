@@ -1,105 +1,10 @@
-// const { url } = require("inspector");
-
 $(document).ready(function () {
-  const playerName = localStorage.getItem("playerName");
-  const playerRegion = localStorage.getItem("playerRegion");
-  const playerId = localStorage.getItem("playerId");
-  console.log(playerName);
-  console.log(playerRegion);
-  console.log(playerId);
 
-  if (playerName && playerRegion && playerId) {
-    document.getElementById("playerId").textContent = playerId;
-    document.getElementById("playerName").textContent = playerName;
-    document.getElementById("playerRegion").textContent = playerRegion;
-    initialize();
-  } else {
-    $("#inputModal").show();
-  }
 
-  $("#inputModal").on("submit", async function (event) {
-    event.preventDefault();
-    const name = $("#username").val();
-    const region = $("#region").val();
-    var num = Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
-    const id = name + "#" + num;
-    console.log(name);
-    console.log(region);
-    console.log(id);
-    localStorage.setItem("playerName", name);
-    localStorage.setItem("playerRegion", region);
-    localStorage.setItem("playerId", id);
-    $("#inputModal").hide();
-
-    // Send Post to create player
-    try {
-      var apigClient = apigClientFactory.newClient();
-
-      // const response = await fetch("http://localhost:3000/createPlayer", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ playerId: id, name, region }),
-      // });
-      const params = {
-        //This is where any header, path, or querystring request params go. The key is the parameter named as defined in the API
-        'playerId' : id,
-        'playerName' : name,
-        'region' : region
-      };
-      const body = {
-        //This is where you define the body of the request
-      };
-      const additionalParams = {
-        //If there are any unmodeled query parameters or headers that need to be sent with the request you can add them here
-        headers: {
+  initialize();
   
-        },
-        queryParams: {
-          'playerId' : id,
-          'playerName' : name,
-          'region' : region
-        }
-      };
-  
-      apigClient.playernameGet(params, body, additionalParams)
-        .then(function(result){
-          console.log(result.data);
-          dataResult = result.data;
-          $('#results').html(resultStr);
-        }).catch( function(result){
-          console.log("error");
-        });
-
-      // if (!response.ok) {
-      //   console.log(response);
-      //   throw new Error("Network response was not ok");
-      // }
-      // const responseData = await response.json();
-      // console.log("Player created successfully", responseData);
-
-      // Send Post to add score
-      // let score = 0;
-      // const response2 = await fetch("http://localhost:3000/addScore", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ playerId: id, score }),
-      // });
-      // if (!response2.ok) {
-      //   console.log(response2);
-      //   throw new Error("Network response was not ok");
-      // }
-      // const responseData2 = await response2.json();
-      // console.log("Score added successfully", responseData2);
-
-      document.getElementById("playerId").textContent = id;
-      document.getElementById("playerName").textContent = name;
-      document.getElementById("playerRegion").textContent = region;
-      initialize();
-    } catch (error) {
-      console.error("Error creating player:", error);
-    }
-  });
 });
+
 function initialize(a) {
   window.rush = 1;
   window.lastTime = Date.now();
