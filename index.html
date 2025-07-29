@@ -373,12 +373,17 @@
       import { UserManager } from "https://cdn.skypack.dev/oidc-client-ts";
       import { playerData } from "./js/playerData.js";
 
+      let baseHref = window.location.origin + window.location.pathname;
+
+      console.log("Base Href:", baseHref);
+      // replaye 127.0.0.1 with localhost if you are testing locally
+      baseHref = baseHref.replace("127.0.0.1", "localhost");
+
       const cognitoAuthConfig = {
         authority:
           "https://cognito-idp.us-west-2.amazonaws.com/us-west-2_C8aDKA7ck",
         client_id: "i1ljeqcnlr979jnl82b3rvv20",
-        redirect_uri: "http://localhost:5500/index.html",
-        // redirect_uri: "https://jbb0807.github.io/hextris",
+        redirect_uri: baseHref,
         response_type: "code",
         scope: "email openid phone",
       };
@@ -390,8 +395,7 @@
 
       export function signOutRedirect() {
         const clientId = "i1ljeqcnlr979jnl82b3rvv20";
-        const logoutUri = "http://localhost:5500/index.html";
-        // const logoutUri = "https://jbb0807.github.io/hextris";
+        const logoutUri = baseHref;
         const cognitoDomain =
           "https://us-west-2c8adka7ck.auth.us-west-2.amazoncognito.com";
         window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
@@ -412,7 +416,11 @@
             $("#playerRegion").text("Region: " + user.profile.region);
             $("#playerInfo").show();
 
-            playerData.setUser(user.profile["cognito:username"], "name", "region");
+            playerData.setUser(
+              user.profile["cognito:username"],
+              "name",
+              "region"
+            );
             console.log("Player Info:", playerInfo);
           } else {
             $("#loginBtn").show();

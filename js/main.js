@@ -113,10 +113,16 @@ function init(b) {
     clearSaveState();
     checkVisualElements(1);
   }
-  if (highscores.length === 0) {
-    $("#currentHighScore").text(0);
+
+  const playerScore = window.sharedDataFromModule.playerScore || null;
+  if (playerScore) {
+    $("#currentHighScore").text(playerScore);
   } else {
-    $("#currentHighScore").text(highscores[0]);
+    if (highscores.length === 0) {
+      $("#currentHighScore").text(0);
+    } else {
+      $("#currentHighScore").text(highscores[0]);
+    }
   }
   infobuttonfading = true;
   $("#pauseBtn").attr("src", "./images/btn_pause.svg");
@@ -349,41 +355,43 @@ function isInfringing(hex) {
 function checkGameOver() {
   for (var i = 0; i < MainHex.sides; i++) {
     if (isInfringing(MainHex)) {
-      $.get("http://54.183.184.126/" + String(score));
-      const highScore = highscores.length > 0 ? highscores[0] : 0;
-      if (score > highScore) {
-        highscores.push(score);
-        writeHighScores();
-      }
-
       const userId = window.sharedDataFromModule.userId || null;
       if (userId) {
-        var apigClient = apigClientFactory.newClient();
+        const playerScore = window.sharedDataFromModule.playerScore || null;
+        if (score > playerScore) {
+          window.sharedDataFromModule.playerScore = score;
+          
+          var apigClient = apigClientFactory.newClient();
 
-        const params = {
-        };
+          const params = {};
 
-        const body = {
-          playerId: userId,
-          score: score,
-        };
-        const additionalParams = {
-          //If there are any unmodeled query parameters or headers that need to be sent with the request you can add them here
-          headers: {
-            "Content-Type": "application/json",
-          }
-        };
+          const body = {
+            playerId: userId,
+            score: score,
+          };
+          const additionalParams = {
+            //If there are any unmodeled query parameters or headers that need to be sent with the request you can add them here
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
 
-        apigClient
-          .scoresPost(params, body, additionalParams)
-          .then(function (result) {
-            console.log(result.data);
-            dataResult = result.data;
-            $("#results").html(resultStr);
-          })
-          .catch(function (result) {
-            console.log("error");
-          });
+          apigClient
+            .scoresPost(params, body, additionalParams)
+            .then(function (result) {
+              console.log(result.data);
+              dataResult = result.data;
+            })
+            .catch(function (result) {
+              console.log("error");
+            });
+        }
+      } else {
+        const highScore = highscores.length > 0 ? highscores[0] : 0;
+        if (score > highScore) {
+          highscores.push(score);
+          writeHighScores();
+        }
       }
 
       gameOverDisplay();
