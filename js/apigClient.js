@@ -13,8 +13,8 @@
  * permissions and limitations under the License.
  */
 
-var apigClientFactoryScore = {};
-apigClientFactoryScore.newClient = function (config) {
+var apigClientFactory = {};
+apigClientFactory.newClient = function (config) {
     var apigClient = { };
     if(config === undefined) {
         config = {
@@ -51,8 +51,9 @@ apigClientFactoryScore.newClient = function (config) {
         config.defaultAcceptType = 'application/json';
     }
 
+    
     // extract endpoint and path from url
-    var invokeUrl = 'https://fzl0n7ro22.execute-api.us-west-2.amazonaws.com/test-score';
+    var invokeUrl = 'https://6hvf5rtxp6.execute-api.us-west-2.amazonaws.com/prod';
     var endpoint = /(^https?:\/\/[^\/]+)/g.exec(invokeUrl)[1];
     var pathComponent = invokeUrl.substring(endpoint.length);
 
@@ -80,21 +81,61 @@ apigClientFactoryScore.newClient = function (config) {
 
     var apiGatewayClient = apiGateway.core.apiGatewayClientFactory.newClient(simpleHttpClientConfig, sigV4ClientConfig);
     
+    
+    
     apigClient.scoresGet = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        apiGateway.core.utils.assertParametersDefined(params, ['score', 'playerId'], ['body']);
+        apiGateway.core.utils.assertParametersDefined(params, ['playerId', 'body'], ['body']);
         
         var scoresGetRequest = {
             verb: 'get'.toUpperCase(),
             path: pathComponent + uritemplate('/scores').expand(apiGateway.core.utils.parseParametersToObject(params, [])),
             headers: apiGateway.core.utils.parseParametersToObject(params, []),
-            queryParams: apiGateway.core.utils.parseParametersToObject(params, ['score', 'playerId']),
+            queryParams: apiGateway.core.utils.parseParametersToObject(params, ['playerId', ]),
             body: body
         };
+        
         
         return apiGatewayClient.makeRequest(scoresGetRequest, authType, additionalParams, config.apiKey);
     };
     
+    
+    apigClient.scoresPost = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        apiGateway.core.utils.assertParametersDefined(params, ['body'], ['body']);
+        
+        var scoresPostRequest = {
+            verb: 'post'.toUpperCase(),
+            path: pathComponent + uritemplate('/scores').expand(apiGateway.core.utils.parseParametersToObject(params, [])),
+            headers: apiGateway.core.utils.parseParametersToObject(params, []),
+            queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(scoresPostRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.scoresOptions = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        apiGateway.core.utils.assertParametersDefined(params, [], ['body']);
+        
+        var scoresOptionsRequest = {
+            verb: 'options'.toUpperCase(),
+            path: pathComponent + uritemplate('/scores').expand(apiGateway.core.utils.parseParametersToObject(params, [])),
+            headers: apiGateway.core.utils.parseParametersToObject(params, []),
+            queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(scoresOptionsRequest, authType, additionalParams, config.apiKey);
+    };
+    
+
     return apigClient;
 };
