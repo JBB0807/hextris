@@ -1,3 +1,5 @@
+// import { playerInfo } from "./playerInfo.js";
+
 function scaleCanvas() {
   canvas.width = $(window).width();
   canvas.height = $(window).height();
@@ -353,47 +355,37 @@ function checkGameOver() {
         highscores.push(score);
         writeHighScores();
       }
-	  
-	      const playerId = localStorage.getItem("playerId");
-        const playerName = localStorage.getItem("playerName");
-        const region = localStorage.getItem("playerRegion");
-        if (playerId) {
-          var apigClient = apigClientFactoryScore.newClient();
 
-          // const response = await fetch("http://localhost:3000/createPlayer", {
-          //   method: "POST",
-          //   headers: { "Content-Type": "application/json" },
-          //   body: JSON.stringify({ playerId: id, name, region }),
-          // });
-          const params = {
-            //This is where any header, path, or querystring request params go. The key is the parameter named as defined in the API
-            'playerId': playerId,
-            'score': score
-          };
-          const body = {
-            //This is where you define the body of the request
-          };
-          const additionalParams = {
-            //If there are any unmodeled query parameters or headers that need to be sent with the request you can add them here
-            headers: {},
-            queryParams: {
-              'playerId': playerId,
-              'score': score
-            },
-          };
+      const userId = window.sharedDataFromModule.userId || null;
+      if (userId) {
+        var apigClient = apigClientFactory.newClient();
 
-          apigClient
-            .scoresGet(params, body, additionalParams)
-            .then(function (result) {
-              console.log(result.data);
-              dataResult = result.data;
-              $("#results").html(resultStr);
-            })
-            .catch(function (result) {
-              console.log("error");
-            });
-        }
-	  
+        const params = {
+        };
+
+        const body = {
+          playerId: userId,
+          score: score,
+        };
+        const additionalParams = {
+          //If there are any unmodeled query parameters or headers that need to be sent with the request you can add them here
+          headers: {
+            "Content-Type": "application/json",
+          }
+        };
+
+        apigClient
+          .scoresPost(params, body, additionalParams)
+          .then(function (result) {
+            console.log(result.data);
+            dataResult = result.data;
+            $("#results").html(resultStr);
+          })
+          .catch(function (result) {
+            console.log("error");
+          });
+      }
+
       gameOverDisplay();
       return true;
     }

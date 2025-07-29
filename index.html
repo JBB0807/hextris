@@ -99,6 +99,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
 
+    <script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
+    <script type="text/javascript" src="js/apigClient.js"></script>
+
     <script type="text/javascript" src="vendor/hammer.min.js"></script>
     <script type="text/javascript" src="vendor/js.cookie.js"></script>
     <script type="text/javascript" src="vendor/jsonfn.min.js"></script>
@@ -118,6 +121,8 @@
     <script type="text/javascript" src="js/input.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
     <script type="text/javascript" src="js/initialization.js"></script>
+
+    <script type="text/javascript" src="js/playerData.js"></script>
 
     <script
       type="text/javascript"
@@ -155,9 +160,6 @@
       type="text/javascript"
       src="lib/apiGatewayCore/simpleHttpClient.js"
     ></script>
-    <script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
-    <script type="text/javascript" src="newPlayerClient.js"></script>
-    <script type="text/javascript" src="newScoreClient.js"></script>
     <script src="vendor/sweet-alert.min.js"></script>
     <link rel="stylesheet" href="style/rrssb.css" />
     <script
@@ -168,7 +170,6 @@
   </head>
   <body>
     <canvas id="canvas"></canvas>
-    <button id="loginBtn">Login</button>
     <div id="overlay" class="faded overlay"></div>
     <div id="startBtn"></div>
     <div id="helpScreen" class="unselectable">
@@ -213,6 +214,7 @@
         <div id="playerRegion">Region Place</div>
         <button id="logoutBtn">Logout</button>
       </div>
+      <button id="loginBtn">Login</button>
     </div>
     <div id="gameoverscreen">
       <div id="container">
@@ -369,13 +371,14 @@
     <script type="text/javascript" src="vendor/rrssb.min.js"></script>
     <script type="module">
       import { UserManager } from "https://cdn.skypack.dev/oidc-client-ts";
+      import { playerData } from "./js/playerData.js";
 
       const cognitoAuthConfig = {
         authority:
           "https://cognito-idp.us-west-2.amazonaws.com/us-west-2_C8aDKA7ck",
         client_id: "i1ljeqcnlr979jnl82b3rvv20",
-        // redirect_uri: "http://localhost:5500/index.html",
-        redirect_uri: "https://jbb0807.github.io/hextris",
+        redirect_uri: "http://localhost:5500/index.html",
+        // redirect_uri: "https://jbb0807.github.io/hextris",
         response_type: "code",
         scope: "email openid phone",
       };
@@ -387,8 +390,8 @@
 
       export function signOutRedirect() {
         const clientId = "i1ljeqcnlr979jnl82b3rvv20";
-        // const logoutUri = "http://localhost:5500/index.html";
-        const logoutUri = "https://jbb0807.github.io/hextris";
+        const logoutUri = "http://localhost:5500/index.html";
+        // const logoutUri = "https://jbb0807.github.io/hextris";
         const cognitoDomain =
           "https://us-west-2c8adka7ck.auth.us-west-2.amazoncognito.com";
         window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
@@ -397,32 +400,23 @@
       }
 
       $(document).ready(function () {
-        // check if user is already signed in
-        userManager.getUser().then((user) => {
-          console.log("User:", user);
-
-          if (user && !user.expired) {
-            $("#loginBtn").hide();
-            $("#playerId").text(user.profile.email);
-            $("#playerRegion").text("Region: " + user.profile.region);
-            $("#playerContainer").show();
-          } else {
-            $("#loginBtn").show();
-            $("#playerContainer").hide();
-          }
-        });
+        $("#loginBtn").show();
+        $("#playerInfo").hide();
 
         // handle the sign-in callback
         userManager.signinCallback().then(function (user) {
           console.log("User:", user);
           if (user) {
             $("#loginBtn").hide();
-            $("#playerId").text(user.profile.email);
+            $("#playerId").text(user.profile["cognito:username"]);
             $("#playerRegion").text("Region: " + user.profile.region);
-            $("#playerContainer").show();
+            $("#playerInfo").show();
+
+            playerData.setUser(user.profile["cognito:username"], "name", "region");
+            console.log("Player Info:", playerInfo);
           } else {
             $("#loginBtn").show();
-            $("#playerContainer").hide();
+            $("#playerInfo").hide();
           }
         });
 
