@@ -211,7 +211,6 @@
       <div id="playerInfo">
         <div id="playerInfoInGameTextHeader">PLAYER INFO</div>
         <div id="playerId">Id placeholder</div>
-        <div id="playerRegion">Region Place</div>
         <button id="logoutBtn">Logout</button>
       </div>
       <button id="loginBtn">Login</button>
@@ -413,13 +412,11 @@
           if (user) {
             $("#loginBtn").hide();
             $("#playerId").text(user.profile["cognito:username"]);
-            $("#playerRegion").text("Region: " + user.profile.region);
             $("#playerInfo").show();
 
             playerData.setUser(
               user.profile["cognito:username"],
-              "name",
-              "region"
+              "name"
             );
             console.log("Player Info:", playerInfo);
           } else {
